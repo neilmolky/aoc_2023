@@ -1,18 +1,19 @@
 
 valid_moves_sum = 0
-base_game = {"red": 12, "green": 13, "blue": 14}
+
+game_rules = {"red": 12, "green": 13, "blue": 14}
+
 for line in open("data.txt"):
-    game, moves = tuple(line.strip().split(": "))
+    game_number, game = tuple(line.strip().split(": "))
     valid = True
-    for pull in moves.split("; "):
-        if not valid:
-            break
+    # game is split into pulls each of which may contain multiple colours
+    for pull in game.split("; "):
         for number, colour in [tuple(move.split(" ")) for move in pull.split(", ")]:
-            if base_game[colour] < int(number):
+            if game_rules[colour] < int(number):
                 valid=False
                 break
     if valid:
-        valid_moves_sum += int(game.split(" ")[1])
+        valid_moves_sum += int(game_number.split(" ")[1])
 print(valid_moves_sum)
 assert valid_moves_sum == 2265
         

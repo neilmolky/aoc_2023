@@ -1,3 +1,5 @@
+# assuming zero does not occur in strings
+# dict is dual purpose, serving to turn words into respective digits but also provide the full spectrum of matches when using items
 digit_dict = {
     "one": "1", 
     "two": "2", 
@@ -10,6 +12,7 @@ digit_dict = {
     "nine": "9"
 }
 
+# assuming each line has 1 number, start will be lazily set for the first number, end will be greedily set for every number
 def getDigit(s):
     start, end = None, None
     for i in range(len(s)):
