@@ -2,7 +2,7 @@ number_list = []
 symbols = set()  
 # because we will chech for neighbors identity in symbols
 
-arr = [line.strip() for line in open("test1.txt")]
+arr = [line.strip() for line in open("data.txt")]
 max_idx = height, width = (len(arr), len(arr[0]))
 
 
@@ -31,8 +31,6 @@ for n in number_list:
             total += int("".join([arr[i][j] for i, j in n]))
             break
 
-
-
-
 print(total)
+assert total == 532445
 

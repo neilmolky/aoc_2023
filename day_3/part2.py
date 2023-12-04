@@ -36,3 +36,4 @@ for nums in gears.values():
         sum_prod += prod(nums)
 
 print(sum_prod)
+assert sum_prod == 79842967
