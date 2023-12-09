@@ -6,8 +6,8 @@ from collections import defaultdict
 copies = defaultdict(lambda: 1)
 
 # for the current ticket lookahead according to the number of wins
-# for each ticket in the lookahead we add another copy for each copy we have of this ticket
-def jackpot(this_ticket: int, wins: int):  
+# for each ticket in the lookahead we add another ticket for each copy we have of this ticket
+def jackpot(this_ticket: int, wins: int):
     for i in range(this_ticket, this_ticket + wins):
         copies[i + 1] += copies[this_ticket]
     return copies[this_ticket] # will initialise copies with 1 if there are no wins
