@@ -65,7 +65,8 @@ def solve(filename):
     ranges = defaultdict(list)
     destinations = {}
 
-    # read input data into the data structures above (note the only range initially is seeds, the other ranges are transformations)
+    # read input data into the data structures above 
+    # (note the only range initially is seeds, the other ranges are transformations)
     for line in open(filename):
         if len(line.strip()) == 0:
             pass
@@ -77,10 +78,8 @@ def solve(filename):
             src_name, dest_name = tuple(line.split(" ")[0].split("-to-"))
             destinations[src_name] = dest_name
         else:
-            try:
-                tmp_tf = [(int(d), int(s), int(s) + int(l)) for d, s, l in tuple(line.strip().split(" "))]
-            except:
-            transformations[src_name].append((tmp_tf))
+            d, s, l = tuple(map(int, line.strip().split(" ")))
+            transformations[src_name].append((d, s, s+l))
 
     # itterate over the data structures to take each original range and apply transformations to that range
     # the new ranges created/left over will be added to the ranges data structure under the transformations name ie. soil
