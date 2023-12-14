@@ -4,5 +4,8 @@ def diff_check(l: list):
     # to get the previous number take the first number instead and subtract the results of diff checker
     return l[0] - diff_check([l[i+1] - l[i] for i in range(len(l)-1)])
 
-print(sum([diff_check([int(s) for s in line.strip().split(" ")]) for line in open("data.txt")]))
+def solve(filename):
+    print(sum([diff_check([int(s) for s in line.strip().split(" ")]) for line in open(filename)]))
 
+if __name__ == "__main__":
+    solve("test1.txt")

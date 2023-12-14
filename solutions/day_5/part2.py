@@ -60,33 +60,40 @@ def apply_transformations(r: (int, int), transformation_list: list[(int, int, in
             #     (remained)    
             return apply_transformations((start, end), transformation_list[1:], location, debug)
 
-transformations = defaultdict(list)
-ranges = defaultdict(list)
-destinations = {}
+def solve(filename):
+    transformations = defaultdict(list)
+    ranges = defaultdict(list)
+    destinations = {}
 
-# read input data into the data structures above (note the only range initially is seeds, the other ranges are transformations)
-for line in open("data.txt"):
-    if len(line.strip()) == 0:
-        pass
-    elif line[0:len("seeds: ")] == "seeds: ":
-        seed_values = [int(i) for i in line.strip()[len("seeds: "):].split(" ")]
-        # (start, end) was much easier to work with than (start, length)
-        ranges["seed"] = [(s, s + l) for s, l in zip(seed_values[0::2], seed_values[1::2])] 
-    elif not line.strip()[0].isdigit():
-        src_name, dest_name = tuple(line.split(" ")[0].split("-to-"))
-        destinations[src_name] = dest_name
-    else:
-        tmp_tf = [(d, s, s + l) for d, s, l in tuple(map(int, line.strip().split(" ")))]
-        transformations[src_name].append((tmp_tf))
+    # read input data into the data structures above (note the only range initially is seeds, the other ranges are transformations)
+    for line in open(filename):
+        if len(line.strip()) == 0:
+            pass
+        elif line[0:len("seeds: ")] == "seeds: ":
+            seed_values = [int(i) for i in line.strip()[len("seeds: "):].split(" ")]
+            # (start, end) was much easier to work with than (start, length)
+            ranges["seed"] = [(s, s + l) for s, l in zip(seed_values[0::2], seed_values[1::2])] 
+        elif not line.strip()[0].isdigit():
+            src_name, dest_name = tuple(line.split(" ")[0].split("-to-"))
+            destinations[src_name] = dest_name
+        else:
+            try:
+                tmp_tf = [(int(d), int(s), int(s) + int(l)) for d, s, l in tuple(line.strip().split(" "))]
+            except:
+            transformations[src_name].append((tmp_tf))
 
-# itterate over the data structures to take each original range and apply transformations to that range
-# the new ranges created/left over will be added to the ranges data structure under the transformations name ie. soil
-for src_name, transform_list in transformations.items():
-    for r in ranges[src_name]:
-        new_range = apply_transformations(r, transform_list, src_name)
-        ranges[destinations[src_name]] += new_range
+    # itterate over the data structures to take each original range and apply transformations to that range
+    # the new ranges created/left over will be added to the ranges data structure under the transformations name ie. soil
+    for src_name, transform_list in transformations.items():
+        for r in ranges[src_name]:
+            new_range = apply_transformations(r, transform_list, src_name)
+            ranges[destinations[src_name]] += new_range
 
-ans = min(ranges["location"], key=lambda x: x[0])[0]
+    ans = min(ranges["location"], key=lambda x: x[0])[0]
 
-assert ans == 78775051
-print(ans)
+    assert ans == 78775051
+    print(ans)
+
+if __name__ == "__main__":
+    solve("test1.txt")
+    

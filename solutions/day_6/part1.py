@@ -11,17 +11,19 @@ def wins(start_time, max_time, dist_gt):
         return 1
     return 0
 
+def solve(filename):
+    race_map = {}
+    for line in open(filename):
+        key, vals = tuple(re.split(": ", line.strip()))
+        race_map[key.strip()] = re.split("\s+", vals.strip())
 
-race_map = {}
-for line in open("data.txt"):
-    key, vals = tuple(re.split(": ", line.strip()))
-    race_map[key.strip()] = re.split("\s+", vals.strip())
+    prod = 1 
+    for i, max_time in enumerate(race_map["Time"]):
+        distance_to_beat = int(race_map["Distance"][i])
+        prod *= sum([wins(j, int(max_time), distance_to_beat) for j in range(0, int(max_time))])
 
+    print(prod)
+    assert prod == 512295
 
-prod = 1 
-for i, max_time in enumerate(race_map["Time"]):
-    distance_to_beat = int(race_map["Distance"][i])
-    prod *= sum([wins(j, int(max_time), distance_to_beat) for j in range(0, int(max_time))])
-
-print(prod)
-assert prod == 512295
+if __name__ == "__main__":
+    solve("test1.txt")

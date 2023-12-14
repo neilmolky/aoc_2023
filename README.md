@@ -4,6 +4,12 @@ Like any half decent nerd I enjoy a good coding challenge. I don't expect my sol
 
 With this repo I aim to doccument my AOC 2023 progress and practice a few new skills.
 
+# Usage
+to run from the root of the project use
+```bash
+python main.py [day] [part]
+```
+
 ### About my AOC experience so far
 Last year I completed the AOC challenge with my colleagues following upskilling on a datascience course. I completed 34 challenges of a total 50 and completed all the code in python in jupyter notebooks... A whole year later and I realise it might be worthwhile implementing some of the better coding practices that I've picked up practicing in a data engineering capacity and perhaps trying to learn some new skills.
 

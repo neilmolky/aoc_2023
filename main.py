@@ -12,9 +12,12 @@ parser.add_argument(
 parser.add_argument(
     "part", nargs=1, type=int, choices=list(range(1, 3))
 )
+parser.add_argument(
+    "filename", nargs=1, type=str, choices=["data.txt", "test1.txt", "test2.txt"], default="data.txt"
+)
 if __name__ == "__main__":
     args = sys.argv[1:]
     cmd = parser.parse_args(args)
     module = importlib.import_module(f"solutions.day_{cmd.day[0]}.part{cmd.part[0]}")
-    path = f"solutions/day_{cmd.day[0]}/data.txt"
+    path = f"solutions/day_{cmd.day[0]}/{cmd.filename[0]}"
     module.solve(path)

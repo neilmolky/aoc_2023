@@ -7,6 +7,8 @@ def diff_check(l: list):
     # to get the next number take the last number of the list only and add the results of diff checker
     return l[-1] + diff_check([l[i+1] - l[i] for i in range(len(l)-1)])
 
+def solve(filename):
+    print(sum([diff_check([int(s) for s in line.strip().split(" ")]) for line in open(filename)]))
 
-print(sum([diff_check([int(s) for s in line.strip().split(" ")]) for line in open("data.txt")]))
-    
+if __name__ == "__main__":
+    solve("test1.txt")

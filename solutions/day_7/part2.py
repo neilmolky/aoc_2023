@@ -1,12 +1,30 @@
 from collections import namedtuple
 
-
 Hand = namedtuple("Hand", "hand, bid")
 mkHand = lambda hand, bid: Hand(hand, int(bid))
 
 card_order = "AKQT98765432" # remove joker from card order and count jokers sepperately
 joker_order = card_order + "J"
 type_order = [[5], [1, 4], [2, 3], [1, 1, 3], [1, 2, 2], [1, 1, 1, 2], [1, 1, 1, 1, 1]]
+
+def solve(filename):
+    cards_seen = []
+
+    for line in open(filename):
+        h = mkHand(*line.split(" "))
+        idx = 0
+        while idx < len(cards_seen):
+            score = scorer(cards_seen[idx],h)
+            if score > 0:
+                break
+            idx += 1
+        cards_seen.insert(idx, h)
+
+    sum = 0
+    for i, card in enumerate(cards_seen[::-1], start=1):
+        sum += i * card.bid
+
+    print(sum)
 
 
 def get_type_order(h):
@@ -22,7 +40,6 @@ def get_type_order(h):
         s[-1] += jokers
     return s
 
-
 def scorer(first, second):
     s1 = get_type_order(first)
     s2 = get_type_order(second)        
@@ -36,24 +53,5 @@ def scorer(first, second):
     else:
         return type_order.index(s1) - type_order.index(s2)
 
-cards_seen = []
-
-
-for line in open("data.txt"):
-    h = mkHand(*line.split(" "))
-    idx = 0
-    while idx < len(cards_seen):
-        score = scorer(cards_seen[idx],h)
-        if score > 0:
-            break
-        idx += 1
-    cards_seen.insert(idx, h)
-
-for card in cards_seen:
-    print(card, get_type_order(card)) 
-
-sum = 0
-for i, card in enumerate(cards_seen[::-1], start=1):
-    sum += i * card.bid
-
-print(sum)
+if __name__ == "__main__":
+    solve("test1.txt")

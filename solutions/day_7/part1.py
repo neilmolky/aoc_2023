@@ -7,10 +7,31 @@ from collections import namedtuple
 # the card order represents the value of cards
 
 Hand = namedtuple("Hand", "hand, bid")
-mkHand = lambda hand, bid: Hand(hand, int(bid))
+
+def mkHand(hand, bid): 
+    return Hand(hand, int(bid))
 
 card_order = "AKQJT98765432"
 type_order = [[5], [1, 4], [2, 3], [1, 1, 3], [1, 2, 2], [1, 1, 1, 2], [1, 1, 1, 1, 1]]
+
+def solve(filename):
+    cards_seen = []
+
+    for line in open(filename):
+        h = mkHand(*line.split(" "))
+        idx = 0
+        while idx < len(cards_seen):
+            # sort loop will increase the index in cards seen unless the score comparison is greater than or there is no list left
+            score = scorer(cards_seen[idx],h)
+            if score > 0:
+                break
+            idx += 1
+        cards_seen.insert(idx, h)
+    
+    sum = 0
+    for i, card in enumerate(cards_seen[::-1], start=1):
+        sum += i * card.bid
+    print(sum)
 
 def scorer(first, second):
     # score these hands against each other first > second = positive
@@ -31,29 +52,6 @@ def scorer(first, second):
     else:
         # if this difference is positive or negative that represents gt or lt
         return type_order.index(s1) - type_order.index(s2)
-    
-            
 
-
-cards_seen = []
-
-
-for line in open("test1.txt"):
-    h = mkHand(*line.split(" "))
-    idx = 0
-    while idx < len(cards_seen):
-        # sort loop increase the index in cards seen unless the score comparison is greater than or there is no list left
-        score = scorer(cards_seen[idx],h)
-        if score > 0:
-            break
-        idx += 1
-    cards_seen.insert(idx, h)
-
-print(cards_seen)
-sum = 0
-# there miht be a more elegant way to do this
-for i, card in enumerate(cards_seen[::-1], start=1):
-    sum += i * card.bid
-
-print(sum)
-
+if __name__ == "__main__":
+    solve("test1.txt")

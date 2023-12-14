@@ -23,9 +23,12 @@ def getDigit(s):
                 end = number
     return int(start + end)
 
+def solve(filename):
+    total = 0
+    for line in open(filename):
+        total += getDigit(line.strip())
+    print(total)
+    assert total == 55358
 
-total = 0
-for line in open("data.txt"):
-    total += getDigit(line.strip())
-print(total)
-assert total == 55358
+if __name__ == "__main__":
+    solve("test1.txt")

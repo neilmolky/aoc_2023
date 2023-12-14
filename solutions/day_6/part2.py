@@ -12,55 +12,57 @@ def wins(start_time, max_time, dist_gt):
         return 1
     return 0
 
+def solve(filename):
+    race_map = {}
+    
+    for i, line in enumerate(open(filename)):
+        key, vals = tuple(re.split(": ", line.strip()))
+        race_map[key.strip()] = int("".join([char for char in vals if char != " "]))
 
-race_map = {}
-for i, line in enumerate(open("data.txt")):
-    key, vals = tuple(re.split(": ", line.strip()))
-    race_map[key.strip()] = int("".join([char for char in vals if char != " "]))
+    # here we do gradient descent
+    start_pos, end_pos = 1, race_map["Distance"]
 
-# here we do gradient descent
-start_pos, end_pos = 1, race_map["Distance"]
+    first_win, last_win = None, None
 
-first_win, last_win = None, None
+    # step size should
+    step_size = end_pos // 10**(len(str(end_pos))-1)
 
-# step size should
-step_size = end_pos // 10**(len(str(end_pos))-1)
-
-for i in range(1000): # 1000 iterations should be more than enough
-    # look for the first win
-    while start_pos < end_pos and not wins(start_pos, race_map["Time"], race_map["Distance"]):
-        start_pos += step_size
-    # reverse after win or reach limit and reduce step size
-    start_pos -= step_size
-    step_size//=2
-    if step_size == 1:
-        while not wins(start_pos, race_map["Time"], race_map["Distance"]):
+    for i in range(1000): # 1000 iterations should be more than enough
+        # look for the first win
+        while start_pos < end_pos and not wins(start_pos, race_map["Time"], race_map["Distance"]):
             start_pos += step_size
-        first_win = start_pos
-        break
-    if start_pos > race_map["Time"]:
-        raise Exception("first win not found!")
+        # reverse after win or reach limit and reduce step size
+        start_pos -= step_size
+        step_size//=2
+        if step_size == 1:
+            while not wins(start_pos, race_map["Time"], race_map["Distance"]):
+                start_pos += step_size
+            first_win = start_pos
+            break
+        if start_pos > race_map["Time"]:
+            raise Exception("first win not found!")
 
-# reset step size, it's now at most as big as the distance less the first win
-step_size = end_pos - first_win
+    # reset step size, it's now at most as big as the distance less the first win
+    step_size = end_pos - first_win
 
-for i in range(1000):
-    # look for the last win
-    while wins(start_pos, race_map["Time"], race_map["Distance"]):
-        start_pos += step_size
-    start_pos -= step_size
-    step_size//=2
-    if step_size == 1:
+    for i in range(1000):
+        # look for the last win
         while wins(start_pos, race_map["Time"], race_map["Distance"]):
             start_pos += step_size
-        last_win = start_pos
-        break
-    if start_pos > race_map["Time"]:
-        print("warn, end not found")
-        end_pos = race_map["Distance"]
+        start_pos -= step_size
+        step_size//=2
+        if step_size == 1:
+            while wins(start_pos, race_map["Time"], race_map["Distance"]):
+                start_pos += step_size
+            last_win = start_pos
+            break
+        if start_pos > race_map["Time"]:
+            print("warn, end not found")
+            end_pos = race_map["Distance"]
 
-print(last_win-first_win)
-assert last_win-first_win == 36530883
+    print(last_win-first_win)
+    assert last_win-first_win == 36530883
     
 
-        
+if __name__ == "__main__":
+    solve("test1.txt")  
