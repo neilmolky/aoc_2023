@@ -1,12 +1,9 @@
-from functools import cache
 from solutions.day_14.part1 import Direction, roll_loop, show, calc_sum
 
 def washing_machine(rolls, blocks, arr_size):
-    n = roll_loop(rolls, blocks, Direction.North, arr_size)
-    w = roll_loop(n, blocks, Direction.West, arr_size)
-    s = roll_loop(w, blocks, Direction.South, arr_size)
-    e = roll_loop(s, blocks, Direction.East, arr_size)
-    return e
+    for d in Direction:
+        rolls = roll_loop(rolls, blocks, d, arr_size)
+    return rolls
 
 def solve(filename):
     blocks, rolls = set(), set()
@@ -17,25 +14,24 @@ def solve(filename):
             elif char == "O":
                 rolls.add((i, j))
     arr_size = (i+1, j+1)
-    itter_rolls = frozenset(rolls)
-    itter_blocks = frozenset(blocks)
 
     stored_loops = []
     start = 1000000000
     loopIdx = False
     while not loopIdx:
-        stored_loops.append(itter_rolls)
-        itter_rolls = washing_machine(itter_rolls, itter_blocks, arr_size)
+        # add state to store
+        stored_loops.append(rolls)
+        # create new state
+        rolls = washing_machine(rolls, blocks, arr_size)
+        # check if new state matches previous states and store the index if so
         for i, past in enumerate(stored_loops):
-            if past == itter_rolls:
-
+            if past == rolls:
                 loopIdx = True
                 break
+        # decrimenting start will allow us to find the remainder
         start -= 1
-    print(start)
-    print(i)
-    infinite_loop = stored_loops[i:]
 
+    infinite_loop = stored_loops[i:]
     print(calc_sum(infinite_loop[start % len(infinite_loop)], arr_size, Direction.North))
 
 if __name__ == "__main__":

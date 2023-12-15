@@ -2,20 +2,18 @@ from functools import cache
 from enum import Enum
 
 class Direction(Enum):
+    # bits represent weight index, pos index and is_start respectively
+    # (i, j) represents a position and directions each store a binary representation of range details
     North = int("11", 2)
-    East = int("100", 2)
-    South = int("10", 2)
     West = int("101", 2)
+    South = int("10", 2)
+    East = int("100", 2)
 
 def weight_index(direction):
-    if direction.value & int("100", 2):
-        return 1
-    return 0
-    
+    return int(bool(direction.value & int("100", 2)))
+
 def pos_index(direction):
-    if direction.value & int("10", 2):
-        return 1
-    return 0
+    return int(bool(direction.value & int("10", 2)))
 
 def range_orientation(direction):
     if is_start(direction):
@@ -50,31 +48,26 @@ def show(rolls, blocks, arr_size):
                 print(".", end="")
         print()
 
-def roll_line(rolls: frozenset[int], blocks: frozenset[int], d: Direction, length: int):
-    indices = []
-    start = 0 if is_start(d) else length
-    stop = length if is_start(d) else -1
-    limit = 0 if is_start(d) else length - 1
-    for i in range(start, stop, range_orientation(d)):
-        if i in rolls:
-            indices.append(limit)
-            limit += range_orientation(d)
-        if i in blocks:
-            limit = i+range_orientation(d)
-    return indices
+def roll_loop(rolls: set[(int, int)], blocks: set[(int, int)], d: Direction, arr_size: (int, int)):
+    new_rolls = set()
+    length = arr_size[weight_index(d)]
 
-def roll_loop(rolls: frozenset[(int, int)], blocks: frozenset[(int, int)], d: Direction, arr_size: (int, int)):
-    new_rolls = []
     # each pos_index represents a line rolling in the same direction
-    for i in range(arr_size[pos_index(d)]):
-        # the subset of integers for rolls and blocks goes into the function (reduced cache size)
-        subset_rolls = frozenset({r[weight_index(d)] for r in rolls if r[pos_index(d)] == i})
-        subset_blocks = frozenset({b[weight_index(d)] for b in blocks if b[pos_index(d)] == i})
-        # a collection integers returned is reconstruced into a set 
-        int_set = roll_line(subset_rolls, subset_blocks, d, arr_size[weight_index(d)])
-        # intersection is added 
-        new_rolls.extend([rebuild(d, i, j) for j in int_set])
-    return frozenset(new_rolls)
+    for pos in range(arr_size[pos_index(d)]):
+        # initialise the range and limit
+        start = 0 if is_start(d) else length
+        stop = length if is_start(d) else -1
+        limit = 0 if is_start(d) else length - 1
+        for weight in range(start, stop, range_orientation(d)):
+            if rebuild(d, pos, weight) in rolls:
+                # add blocks in order they were encountered, the limit will increase by the number added
+                new_rolls.add(rebuild(d, pos, limit))
+                limit += range_orientation(d)
+            if rebuild(d, pos, weight) in blocks:
+                # the limit will increase to the blok + the direction of the range
+                limit = weight+range_orientation(d) 
+    return set(new_rolls)
+
 
 def solve(filename):
     blocks, rolls = set(), set()
@@ -86,11 +79,8 @@ def solve(filename):
                 rolls.add((i, j))
     arr_size = (i+1, j+1)
     d = Direction.North
-    n = roll_loop(frozenset(rolls), frozenset(blocks), d, arr_size)
+    n = roll_loop(rolls, blocks, d, arr_size)
     print(calc_sum(n, arr_size, d))
-    show(rolls, blocks, arr_size)
-    print()
-    show(n, blocks, arr_size)
 
 if __name__ == "__main__":
     solve("test1.txt")
