@@ -13,7 +13,7 @@ parser.add_argument(
     "part", nargs=1, type=int, choices=list(range(1, 3))
 )
 parser.add_argument(
-    "filename", nargs=1, type=str, choices=["data.txt", "test1.txt", "test2.txt"], default="data.txt"
+    "filename", nargs=1, type=str, choices=["data.txt", "test1.txt", "test2.txt", "test3.txt"], default="data.txt"
 )
 if __name__ == "__main__":
     args = sys.argv[1:]
