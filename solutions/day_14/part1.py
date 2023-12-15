@@ -9,33 +9,57 @@ class Direction(Enum):
     South = int("10", 2)
     East = int("100", 2)
 
-def weight_index(direction):
-    return int(bool(direction.value & int("100", 2)))
+    def weight_index(self):
+        return int(bool(self.value & int("100", 2)))
 
-def pos_index(direction):
-    return int(bool(direction.value & int("10", 2)))
+    def pos_index(self):
+        return int(bool(self.value & int("10", 2)))
 
-def range_orientation(direction):
-    if is_start(direction):
-        return 1
-    return -1
+    def range_orientation(self):
+        return 1 if self.is_start() else -1
 
-def is_start(direction):
-    return direction.value & int("1", 2)
+    def is_start(self):
+        return self.value & int("1", 2)
+    
+    def start(self, length):
+        return 0 if self.is_start() else length
+        
+    def stop(self, length):
+        return length if self.is_start() else -1
+        
+    def limit(self, length):
+        return 0 if self.is_start() else length - 1
 
-def rebuild(direction, pos, weight):
-    if weight_index(direction):
-        return (pos, weight)
-    return (weight, pos)
 
-def calc_sum(rolls, arr_size, d):
-    weight = arr_size[weight_index(d)]
-    total = 0
-    for i in range(arr_size[0]):
-        for j in range(arr_size[1]):
-            if (i, j) in rolls:
-                total += weight + ((i, j)[weight_index(d)] * -range_orientation(d))
-    return total
+    def rebuild(self, pos, weight):
+        return (pos, weight) if self.weight_index() else (weight, pos)
+
+    def calc_sum(self, rolls, arr_size):
+        weight = arr_size[self.weight_index()]
+        total = 0
+        for i in range(arr_size[0]):
+            for j in range(arr_size[1]):
+                if (i, j) in rolls:
+                    total += weight + ((i, j)[self.weight_index()] * -self.range_orientation())
+        return total
+
+    def roll_loop(self, rolls: set[(int, int)], blocks: set[(int, int)], arr_size: (int, int)):
+        new_rolls = set()
+        length = arr_size[self.weight_index()]
+
+        # each pos_index represents a line rolling in the same direction
+        for pos in range(arr_size[self.pos_index()]):
+            # initialise the range and limit
+            limit = self.limit(length)
+            for weight in range(self.start(length), self.stop(length), self.range_orientation()):
+                if self.rebuild(pos, weight) in rolls:
+                    # add blocks in order they were encountered, the limit will increase by the number added
+                    new_rolls.add(self.rebuild(pos, limit))
+                    limit += self.range_orientation()
+                if self.rebuild(pos, weight) in blocks:
+                    # the limit will increase to the blok + the direction of the range
+                    limit = weight + self.range_orientation() 
+        return new_rolls
 
 def show(rolls, blocks, arr_size):
     for i in range(arr_size[0]):
@@ -48,27 +72,6 @@ def show(rolls, blocks, arr_size):
                 print(".", end="")
         print()
 
-def roll_loop(rolls: set[(int, int)], blocks: set[(int, int)], d: Direction, arr_size: (int, int)):
-    new_rolls = set()
-    length = arr_size[weight_index(d)]
-
-    # each pos_index represents a line rolling in the same direction
-    for pos in range(arr_size[pos_index(d)]):
-        # initialise the range and limit
-        start = 0 if is_start(d) else length
-        stop = length if is_start(d) else -1
-        limit = 0 if is_start(d) else length - 1
-        for weight in range(start, stop, range_orientation(d)):
-            if rebuild(d, pos, weight) in rolls:
-                # add blocks in order they were encountered, the limit will increase by the number added
-                new_rolls.add(rebuild(d, pos, limit))
-                limit += range_orientation(d)
-            if rebuild(d, pos, weight) in blocks:
-                # the limit will increase to the blok + the direction of the range
-                limit = weight+range_orientation(d) 
-    return set(new_rolls)
-
-
 def solve(filename):
     blocks, rolls = set(), set()
     for i, line in enumerate(open(filename)):
@@ -79,8 +82,8 @@ def solve(filename):
                 rolls.add((i, j))
     arr_size = (i+1, j+1)
     d = Direction.North
-    n = roll_loop(rolls, blocks, d, arr_size)
-    print(calc_sum(n, arr_size, d))
+    n = d.roll_loop(rolls, blocks, arr_size)
+    print(d.calc_sum(n, arr_size))
 
 if __name__ == "__main__":
     solve("test1.txt")

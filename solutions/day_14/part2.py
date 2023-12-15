@@ -1,8 +1,8 @@
-from solutions.day_14.part1 import Direction, roll_loop, show, calc_sum
+from solutions.day_14.part1 import Direction
 
 def washing_machine(rolls, blocks, arr_size):
     for d in Direction:
-        rolls = roll_loop(rolls, blocks, d, arr_size)
+        rolls = d.roll_loop(rolls, blocks, arr_size)
     return rolls
 
 def solve(filename):
@@ -32,7 +32,7 @@ def solve(filename):
         start -= 1
 
     infinite_loop = stored_loops[i:]
-    print(calc_sum(infinite_loop[start % len(infinite_loop)], arr_size, Direction.North))
+    print(Direction.North.calc_sum(infinite_loop[start % len(infinite_loop)], arr_size))
 
 if __name__ == "__main__":
     solve("test1.txt")
