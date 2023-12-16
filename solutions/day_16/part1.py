@@ -48,15 +48,15 @@ def find_energised_tiles(initial_pos: tuple[int, int], initial_dir: Direction, m
 
 def solve(filename: str):
     mirrors: dict[tuple[int, int], Mirror] = {}
-    for i, line in enumerate(open(filename)):
-        for j, char in enumerate(line.strip()):
-            if char != ".":
-                mirrors[(i, j)] = Mirror(char, (i, j))
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            for j, char in enumerate(line.strip()):
+                if char != ".":
+                    mirrors[(i, j)] = Mirror(char, (i, j))
     arr_size: tuple[int, int] = (i+1, j+1)
     initial_pos: tuple[int, int] = (0, 0)
     energised = find_energised_tiles(initial_pos, Direction.East, mirrors, arr_size)
-    show(energised, arr_size)
-    print(len(energised))
+    return len(energised)
 
 if __name__ == "__main__":
     solve("test1.txt")

@@ -1,8 +1,11 @@
 
 
 def solve(filename: str):
-    for line in open(filename):
-        pass
+    with open(filename) as file:
+        for line in file:
+            pass
+    result = ...
+    return result
 
 if __name__ == "__main__":
     solve("test1.txt")

@@ -7,7 +7,11 @@ With this repo I aim to doccument my AOC 2023 progress and practice a few new sk
 # Usage
 to run from the root of the project use
 ```bash
-python main.py [day] [part]
+python main -m [day] [part]
+```
+tests
+```bash
+python -m unittest test/test.py
 ```
 
 ### About my AOC experience so far

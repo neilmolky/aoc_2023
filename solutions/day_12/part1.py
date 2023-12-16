@@ -3,11 +3,12 @@ from functools import cache
 
 def solve(filename: str):
     total = 0
-    for line in open(filename):
-        springs, broken_str = tuple(line.split(" "))
-        broken = tuple(map(int, broken_str.split(",")))
-        total += recursive_combinations(broken, springs)
-    print(total)
+    with open(filename) as file:
+        for line in file:
+            springs, broken_str = tuple(line.split(" "))
+            broken = tuple(map(int, broken_str.split(",")))
+            total += recursive_combinations(broken, springs)
+    return total
 
 @cache
 def recursive_combinations(lengths, springs):

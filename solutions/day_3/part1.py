@@ -3,8 +3,8 @@ def solve(filename):
     number_list = []
     symbols = set()  
     # use set because we will check for neighbors identity in symbols
-
-    arr = [line.strip() for line in open(filename)]
+    with open(filename) as file:
+        arr = [line.strip() for line in file]
     # read into array and we can index strings as though this was a 2d array
     # this way we can efficiently index the array at a constant time
 
@@ -39,9 +39,7 @@ def solve(filename):
             if part_adjacent:
                 total += int("".join([arr[i][j] for i, j in n]))
                 break
-
-    print(total)
-    assert total == 532445
+    return total
 
 if __name__ == "__main__":
     solve("test1.txt")

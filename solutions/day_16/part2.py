@@ -13,14 +13,14 @@ def iterate_configs(arr_size, mirrors):
 
 def solve(filename: str):
     mirrors: dict[tuple[int, int], Mirror] = {}
-    for i, line in enumerate(open(filename)):
-        for j, char in enumerate(line.strip()):
-            if char != ".":
-                mirrors[(i, j)] = Mirror(char, (i, j))
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            for j, char in enumerate(line.strip()):
+                if char != ".":
+                    mirrors[(i, j)] = Mirror(char, (i, j))
     arr_size: tuple[int, int] = (i+1, j+1)
     x = iterate_configs(arr_size, mirrors)
-    show(x, arr_size)
-    print(len(x))
+    return len(x)
 
 if __name__ == "__main__":
     solve("test1.txt")

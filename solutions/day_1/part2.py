@@ -28,7 +28,6 @@ def solve(filename):
     with open(filename) as file:
         for line in file:
             total += getDigit(line.strip())
-    print(total)
     return total
 
 if __name__ == "__main__":

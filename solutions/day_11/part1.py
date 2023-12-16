@@ -1,10 +1,11 @@
 
 def solve(filename):
     in_array = []
-    for line in open(filename):
-        in_array.append(line)
-        if "#" not in line:
+    with open(filename) as file:
+        for line in file:
             in_array.append(line)
+            if "#" not in line:
+                in_array.append(line)
 
     galaxy_coordinates = set()
 
@@ -22,7 +23,7 @@ def solve(filename):
         i1, j1 = galaxy_coordinates.pop()
         for i2, j2 in galaxy_coordinates:
             total += abs(i1 - i2) + abs(j1 - j2)
-    print(total)
+    return total
 
 if __name__ == "__main__":
     solve("test1.txt")

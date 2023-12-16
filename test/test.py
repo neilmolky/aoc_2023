@@ -13,17 +13,17 @@ class GeneralTestCase(unittest.TestCase):
     def part1Test(self):
         module = import_module(f"solutions.day_{self.day}.part1")
         result = module.solve(self.path_to_data)
-        self.assertEqual(str(result), self.part_1_solution)
+        self.assertEqual(str(result), self.part_1_solution, f"Day {self.day} part 1 failed on stored input data")
 
     def part2Test(self):
         module = import_module(f"solutions.day_{self.day}.part2")
         result = module.solve(self.path_to_data)
-        self.assertEqual(str(result), self.part_2_solution)
+        self.assertEqual(str(result), self.part_2_solution, f"Day {self.day} part 2 failed on stored input data")
 
 
 def load_tests(loader, tests, pattern):
 
-    days_with_solutions = 1
+    days_with_solutions = 16
 
     test_suite = unittest.TestSuite()
     for i in range(1, days_with_solutions+1):
@@ -39,24 +39,6 @@ def get_solution_record(day: int, part: int):
     with open(record_location) as file:
         recorded_solution = file.read().strip()
     return recorded_solution
-
-# def test_case(day: int, part: int):
-#     def test(self):
-#         module = import_module(f"solutions.day_{day}.part{part}")
-#         path = path_to_data(day)
-#         with open(path_to_solution(day, part)) as file:
-#             expected = file.read().strip()
-#         result = str(module.solve(path)).strip()
-#         self.assertEqual(result, expected)
-#     return test
-
-# def generate_tests(days_with_soluions: int):
-#     for pt in range(1, 3):
-#         for i in range(1, days_with_soluions+1):
-#             test_name: str = f"test_day_{i}_part_{pt}" 
-#             test = test_case(i, pt)
-#             setattr(TestDay, test_name, test)
-#             TestDays.addTest(TestDay)
 
 if __name__ == '__main__':
     unittest.main()

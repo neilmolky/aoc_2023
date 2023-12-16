@@ -67,19 +67,20 @@ def solve(filename):
 
     # read input data into the data structures above 
     # (note the only range initially is seeds, the other ranges are transformations)
-    for line in open(filename):
-        if len(line.strip()) == 0:
-            pass
-        elif line[0:len("seeds: ")] == "seeds: ":
-            seed_values = [int(i) for i in line.strip()[len("seeds: "):].split(" ")]
-            # (start, end) was much easier to work with than (start, length)
-            ranges["seed"] = [(s, s + l) for s, l in zip(seed_values[0::2], seed_values[1::2])] 
-        elif not line.strip()[0].isdigit():
-            src_name, dest_name = tuple(line.split(" ")[0].split("-to-"))
-            destinations[src_name] = dest_name
-        else:
-            d, s, l = tuple(map(int, line.strip().split(" ")))
-            transformations[src_name].append((d, s, s+l))
+    with open(filename) as file:
+        for line in file:
+            if len(line.strip()) == 0:
+                pass
+            elif line[0:len("seeds: ")] == "seeds: ":
+                seed_values = [int(i) for i in line.strip()[len("seeds: "):].split(" ")]
+                # (start, end) was much easier to work with than (start, length)
+                ranges["seed"] = [(s, s + l) for s, l in zip(seed_values[0::2], seed_values[1::2])] 
+            elif not line.strip()[0].isdigit():
+                src_name, dest_name = tuple(line.split(" ")[0].split("-to-"))
+                destinations[src_name] = dest_name
+            else:
+                d, s, l = tuple(map(int, line.strip().split(" ")))
+                transformations[src_name].append((d, s, s+l))
 
     # itterate over the data structures to take each original range and apply transformations to that range
     # the new ranges created/left over will be added to the ranges data structure under the transformations name ie. soil
@@ -89,9 +90,8 @@ def solve(filename):
             ranges[destinations[src_name]] += new_range
 
     ans = min(ranges["location"], key=lambda x: x[0])[0]
-
-    assert ans == 78775051
-    print(ans)
+    return ans
+    
 
 if __name__ == "__main__":
     solve("test1.txt")

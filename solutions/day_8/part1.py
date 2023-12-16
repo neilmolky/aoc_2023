@@ -9,15 +9,16 @@ def solve(filename):
     i5 = len("HFF = (HRR, BSG")
 
     nodes = {}
-    for i, line in enumerate(open(filename)):
-        if i < 1:
-            # we can rotate a deque and set it to be fixed size making it efficient to check 
-            dirs = deque([int(l == "R") for l in line.strip()], len(line.strip())) 
-        elif i > 1:
-            name = line[:i1]
-            left = line[i2:i3]
-            right = line[i4:i5]
-            nodes[name] = (left, right)
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            if i < 1:
+                # we can rotate a deque and set it to be fixed size making it efficient to check 
+                dirs = deque([int(l == "R") for l in line.strip()], len(line.strip())) 
+            elif i > 1:
+                name = line[:i1]
+                left = line[i2:i3]
+                right = line[i4:i5]
+                nodes[name] = (left, right)
     root = "AAA"
     i = 0
     while root != "ZZZ":
@@ -25,7 +26,7 @@ def solve(filename):
         dirs.append(dir)
         root = nodes[root][dir]
         i += 1
-    print(i)
+    return i
 
 if __name__ == "__main__":
     solve("test1.txt")

@@ -4,15 +4,16 @@ def solve(filename):
     # reading into defaultdict simplifies the process of appending to lists we don't have to initialise
     arrs = defaultdict(list)
     i = 0
-    for line in open(filename):
-        if len(line.strip()) == 0:
-            i += 1
-        else:
-            arrs[i].append(list(line.strip()))
+    with open(filename) as file:
+        for line in file:
+            if len(line.strip()) == 0:
+                i += 1
+            else:
+                arrs[i].append(list(line.strip()))
     total = 0
     for a in arrs.values():
         total += find_reflection(a)
-    print(total)
+    return total
 
 def mirror(arr, i, j, allowed_diffs=0, diffs=0):
     # using diffs as an accumulator we can both return early when diffs > than the allowed limit (see section 2)

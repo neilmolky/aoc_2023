@@ -10,21 +10,21 @@ type_order = [[5], [1, 4], [2, 3], [1, 1, 3], [1, 2, 2], [1, 1, 1, 2], [1, 1, 1,
 def solve(filename):
     cards_seen = []
 
-    for line in open(filename):
-        h = mkHand(*line.split(" "))
-        idx = 0
-        while idx < len(cards_seen):
-            score = scorer(cards_seen[idx],h)
-            if score > 0:
-                break
-            idx += 1
-        cards_seen.insert(idx, h)
+    with open(filename) as file:
+        for line in file:
+            h = mkHand(*line.split(" "))
+            idx = 0
+            while idx < len(cards_seen):
+                score = scorer(cards_seen[idx],h)
+                if score > 0:
+                    break
+                idx += 1
+            cards_seen.insert(idx, h)
 
     sum = 0
     for i, card in enumerate(cards_seen[::-1], start=1):
         sum += i * card.bid
-
-    print(sum)
+    return sum
 
 
 def get_type_order(h):

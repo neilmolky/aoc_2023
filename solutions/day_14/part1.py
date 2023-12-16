@@ -84,18 +84,20 @@ def show(rolls: set[tuple[int, int]], blocks: set[tuple[int, int]], arr_size: tu
                 print(".", end="")
         print()
 
-def solve(filename: str) -> None:
+def solve(filename: str):
     blocks, rolls = set(), set()
-    for i, line in enumerate(open(filename)):
-        for j, char in enumerate(line.strip()):
-            if char == "#":
-                blocks.add((i, j))
-            elif char == "O":
-                rolls.add((i, j))
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            for j, char in enumerate(line.strip()):
+                if char == "#":
+                    blocks.add((i, j))
+                elif char == "O":
+                    rolls.add((i, j))
     arr_size: tuple[int, int] = (i+1, j+1)
     d = Direction.North
     n: set[tuple[int, int]] = d.roll_loop(rolls, blocks, arr_size)
-    print(d.calc_sum(n, arr_size))
+    result = d.calc_sum(n, arr_size)
+    return result
 
 if __name__ == "__main__":
     solve("test1.txt")

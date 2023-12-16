@@ -10,10 +10,11 @@ def lens_hash(s: str):
 def solve(filename: str):
     global hash_store
     total = 0
-    for line in open(filename):
-        for s in line.split(","):
-            total += lens_hash(s)            
-    print(total)
+    with open(filename) as file:
+        for line in file:
+            for s in line.split(","):
+                total += lens_hash(s)            
+    return total
 
 if __name__ == "__main__":
     solve("test1.txt")

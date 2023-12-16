@@ -78,7 +78,6 @@ class PipeLoop:
         # change the S char in the pipe_map global variable so it reflecs its actual piece otherwise this char represents a break in the pipe
         for char, positions in self.pipes.items():
             if {left - self.start, right - self.start} == positions:
-                print(f"resetting S to '{char}'")
                 self.map_array[self.start.i] = self.map_array[self.start.i].replace("S", char)
                 assert self.map_array[self.start.i][self.start.j] != "S"
 
@@ -182,13 +181,14 @@ class PipeLoop:
 def solve(filename):
     # read the whole map in first as an array of strings (treat it as a 2d array with the sring being a char array)
     pipe_map = []
-    for i, line in enumerate(open(filename)):
-        if line.find("S") >= 0:
-            start = Pos(i, line.index("S"))
-        pipe_map.append(line)
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            if line.find("S") >= 0:
+                start = Pos(i, line.index("S"))
+            pipe_map.append(line)
     solver = PipeLoop(pipe_map, start)
     solver.find_perimiter()
-    print(solver.mid_point)
+    return solver.mid_point
 
 if __name__ == "__main__":
     solve("test1.txt")

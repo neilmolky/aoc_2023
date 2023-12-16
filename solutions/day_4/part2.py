@@ -13,14 +13,13 @@ def jackpot(this_ticket: int, wins: int):
     return copies[this_ticket] # will initialise copies with 1 if there are no wins
 
 def solve(filename):
-    for i, line in enumerate(open(filename), start=1):
-        p1, p2 = tuple(line.split(":")[1].strip().split("|"))
-        # intersection provides a set of winning tickets
-        wins = len(set({c for c in p1.strip().split(" ") if c != ""}).intersection(set({c for c in p2.strip().split(" ") if c != ""})))
-        jackpot(i, wins)
-
-    print(sum(copies.values()))
-    assert sum(copies.values()) == 8736438
+    with open(filename) as file:
+        for i, line in enumerate(file, start=1):
+            p1, p2 = tuple(line.split(":")[1].strip().split("|"))
+            # intersection provides a set of winning tickets
+            wins = len(set({c for c in p1.strip().split(" ") if c != ""}).intersection(set({c for c in p2.strip().split(" ") if c != ""})))
+            jackpot(i, wins)
+    return sum(copies.values())
 
 if __name__ == "__main__":
     solve("test1.txt")

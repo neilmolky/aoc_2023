@@ -8,16 +8,17 @@ def wins(start_time, max_time, dist_gt):
     time_remaining = max_time - start_time
     distance = start_time * time_remaining # speed * time_remaining
     if distance > dist_gt:
-        # print(start_time, dist_gt, distance)
         return 1
     return 0
 
 def solve(filename):
     race_map = {}
-    
-    for i, line in enumerate(open(filename)):
-        key, vals = tuple(re.split(": ", line.strip()))
-        race_map[key.strip()] = int("".join([char for char in vals if char != " "]))
+
+    with open(filename) as file:
+   
+        for i, line in enumerate(file):
+            key, vals = tuple(re.split(": ", line.strip()))
+            race_map[key.strip()] = int("".join([char for char in vals if char != " "]))
 
     # here we do gradient descent
     start_pos, end_pos = 1, race_map["Distance"]
@@ -59,9 +60,7 @@ def solve(filename):
         if start_pos > race_map["Time"]:
             print("warn, end not found")
             end_pos = race_map["Distance"]
-
-    print(last_win-first_win)
-    assert last_win-first_win == 36530883
+    return last_win-first_win
     
 
 if __name__ == "__main__":

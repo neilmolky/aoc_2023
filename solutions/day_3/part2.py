@@ -6,7 +6,8 @@ def solve(filename):
     # only interested in numbers touching gears, 
     # each gear wil be a tuple(int, int) key and list[int] values
 
-    arr = [line.strip() for line in open(filename)]
+    with open(filename) as file:
+        arr = [line.strip() for line in file]
     max_idx = height, width = (len(arr), len(arr[0]))
 
     for i, row in enumerate(arr):
@@ -44,9 +45,7 @@ def solve(filename):
     for nums in gears.values():
         if len(nums) > 1:
             sum_prod += prod(nums)
-
-    print(sum_prod)
-    assert sum_prod == 79842967
+    return sum_prod
 
 if __name__ == "__main__":
     solve("test1.txt")

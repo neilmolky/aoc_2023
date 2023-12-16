@@ -3,9 +3,12 @@
 day=$1
 
 mkdir solutions/day_$day
-touch solutions/day_$day/data.txt
-touch solutions/day_$day/test1.txt
-touch solutions/day_$day/test2.txt
+touch data/day_$day/data.txt
+touch data/day_$day/test1.txt
+touch data/day_$day/test2.txt
+touch data/day_$day/part1_solution.txt
+touch data/day_$day/part2_solution.txt
+
 cp templates/solution_template.py solutions/day_$day/part1.py
 cp templates/solution_template.py solutions/day_$day/part2.py
 touch solutions/day_$day/__init__.py

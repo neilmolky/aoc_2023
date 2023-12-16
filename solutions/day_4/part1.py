@@ -10,14 +10,13 @@ def lottorial(i: int)->int:
 
 def solve(filename):
     total = 0
-    for line in open(filename):
-        p1, p2 = tuple(line.split(":")[1].strip().split("|"))
-        # intersection provides a set of winning tickets
-        wins = len(set({c for c in p1.strip().split(" ") if c != ""}).intersection(set({c for c in p2.strip().split(" ") if c != ""})))
-        total += lottorial(wins)
-
-    print(total)
-    assert total == 24542
+    with open(filename) as file:
+        for line in file:
+            p1, p2 = tuple(line.split(":")[1].strip().split("|"))
+            # intersection provides a set of winning tickets
+            wins = len(set({c for c in p1.strip().split(" ") if c != ""}).intersection(set({c for c in p2.strip().split(" ") if c != ""})))
+            total += lottorial(wins)
+    return total
 
 if __name__ == "__main__":
     solve("test1.txt")

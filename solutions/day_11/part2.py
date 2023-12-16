@@ -14,14 +14,15 @@ columns = defaultdict(dict)
 def solve(filename):
     transformation_factor = 1e6
     extra_rows = 0
-    for row_idx, line in enumerate(open(filename)):
-        add_row = 1
-        in_array.append(line)
-        for col_idx, char in enumerate(line):
-            if char == "#":
-                add_row = 0
-                columns[col_idx][row_idx] = row_idx + (extra_rows * (transformation_factor - 1))
-        extra_rows += add_row
+    with open(filename) as file:
+        for row_idx, line in enumerate(file):
+            add_row = 1
+            in_array.append(line)
+            for col_idx, char in enumerate(line):
+                if char == "#":
+                    add_row = 0
+                    columns[col_idx][row_idx] = row_idx + (extra_rows * (transformation_factor - 1))
+            extra_rows += add_row
             
 
     galaxy_coordinates = set()
@@ -34,13 +35,12 @@ def solve(filename):
                 galaxy_coordinates.add((columns[col_idx][row_idx], col_idx + (extra_cols * (transformation_factor - 1))))
         extra_cols += add_col
 
-    # print(galaxy_coordinates)
     total = 0
     while len(galaxy_coordinates) > 0:
         i1, j1 = galaxy_coordinates.pop()
         for i2, j2 in galaxy_coordinates:
             total += (abs(i1 - i2) + abs(j1 - j2))
-    print(int(total))
+    return int(total)
 
 if __name__ == "__main__":
     solve("test1.txt")

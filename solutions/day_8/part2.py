@@ -11,21 +11,23 @@ def solve(filename):
     i5 = len("HFF = (HRR, BSG")
 
     nodes = {}
-    for i, line in enumerate(open(filename)):
-        if i < 1:
-            dirs = deque([int(l == "R") for l in line.strip()], len(line.strip()))
-        elif i > 1:
-            name = line[:i1]
-            left = line[i2:i3]
-            right = line[i4:i5]
-            nodes[name] = (left, right)
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            if i < 1:
+                dirs = deque([int(l == "R") for l in line.strip()], len(line.strip()))
+            elif i > 1:
+                name = line[:i1]
+                left = line[i2:i3]
+                right = line[i4:i5]
+                nodes[name] = (left, right)
     
     lengths = [len(dirs)]
     for n in nodes:
         if n[2] == "A":
             l = find_path(n, dirs.copy(), nodes)
             lengths.append(l)
-    print(lcm(*lengths))
+    result = lcm(*lengths)
+    return result
 
 def find_path(root, dirs, nodes):
     i = 0

@@ -7,12 +7,13 @@ def washing_machine(rolls, blocks, arr_size)->set[tuple[int, int]]:
 
 def solve(filename):
     blocks, rolls = set(), set()
-    for i, line in enumerate(open(filename)):
-        for j, char in enumerate(line.strip()):
-            if char == "#":
-                blocks.add((i, j))
-            elif char == "O":
-                rolls.add((i, j))
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            for j, char in enumerate(line.strip()):
+                if char == "#":
+                    blocks.add((i, j))
+                elif char == "O":
+                    rolls.add((i, j))
     arr_size: tuple[int, int] = (i+1, j+1)
 
     stored_loops = []
@@ -32,7 +33,8 @@ def solve(filename):
         start -= 1
 
     infinite_loop = stored_loops[i:]
-    print(Direction.North.calc_sum(infinite_loop[start % len(infinite_loop)], arr_size))
+    result = Direction.North.calc_sum(infinite_loop[start % len(infinite_loop)], arr_size)
+    return result
 
 if __name__ == "__main__":
     solve("test1.txt")

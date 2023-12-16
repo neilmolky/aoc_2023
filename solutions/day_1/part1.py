@@ -5,7 +5,6 @@ def solve(input_file: str):
         for line in file:
             digits = [d for d in line if d.isdigit()]
             total += int(digits[0] + digits[-1])
-    print(total)
     return total
 
 if __name__ == "__main__":

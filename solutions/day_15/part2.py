@@ -21,9 +21,8 @@ def add(lable, focal_length):
     if not found:
         hash_store[lens_hash(lable)].append((lable, focal_length))
     
-def rm(pair):
+def rm(lable):
     global hash_store
-    lable = pair[0]
     for l, f in hash_store[lens_hash(lable)]:
         if l == lable:
             hash_store[lens_hash(lable)].remove((lable, f))
@@ -32,14 +31,15 @@ def rm(pair):
 def solve(filename: str):
     global hash_store
     total = 0
-    for line in open(filename):
-        for s in line.strip().split(","):
-            hash_map(s)
+    with open(filename) as file:
+        for line in file:
+            for s in line.strip().split(","):
+                hash_map(s)
     total = 0
     for box, pairs in hash_store.items():
         for i, p in enumerate(pairs, start=1):
             total += (box+1) * i * int(p[1])
-    print(total)
+    return total
 
 
 if __name__ == "__main__":

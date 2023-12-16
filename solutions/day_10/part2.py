@@ -6,10 +6,11 @@ from solutions.day_10.part1 import PipeLoop, Pos
 
 def solve(filename):
     pipe_map = []
-    for i, line in enumerate(open(filename)):
-        if line.find("S") >= 0:
-            start = Pos(i, line.index("S"))
-        pipe_map.append(line)
+    with open(filename) as file:
+        for i, line in enumerate(file):
+            if line.find("S") >= 0:
+                start = Pos(i, line.index("S"))
+            pipe_map.append(line)
     pipes = PipeLoop(pipe_map, start)
     pipes.find_perimiter()
 
@@ -26,9 +27,7 @@ def solve(filename):
     # the coloured map is quite nice to see in the terminal too
 
     pipes.find_inside_area()
-    pipes.print_solved_map()
-    print()
-    print(len(pipes.inside_set))
+    return len(pipes.inside_set)
 
 if __name__ == "__main__":
     solve("test1.txt")
