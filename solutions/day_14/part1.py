@@ -9,32 +9,44 @@ class Direction(Enum):
     South = int("10", 2)
     East = int("100", 2)
 
-    def weight_index(self):
+    def weight_index(self) -> int:
         return int(bool(self.value & int("100", 2)))
 
-    def pos_index(self):
+    def pos_index(self) -> int:
         return int(bool(self.value & int("10", 2)))
 
-    def range_orientation(self):
+    def range_orientation(self) -> int:
         return 1 if self.is_start() else -1
 
-    def is_start(self):
+    def is_start(self) -> int:
         return self.value & int("1", 2)
     
-    def start(self, length):
+    def start(self, length: int) -> int:
         return 0 if self.is_start() else length
         
-    def stop(self, length):
+    def stop(self, length: int) -> int:
         return length if self.is_start() else -1
         
-    def limit(self, length):
+    def limit(self, length: int) -> int:
         return 0 if self.is_start() else length - 1
+    
+    def of_pos(self, pos: tuple[int, int]):
+        return pos[0] + (-self.range_orientation() * self.pos_index()), pos[1] + (-self.range_orientation() * self.weight_index())
+    
+    def turn_with_range_orientation(self):
+        return Direction(self.value ^ int("110", 2))
+
+    def turn_against_range_orientation(self):
+        return Direction(self.value ^ int("111", 2))
+    
+    def flip(self):
+        return Direction(self.value ^ int("1", 2))
 
 
-    def rebuild(self, pos, weight):
+    def rebuild(self, pos: int, weight: int)->tuple[int, int]:
         return (pos, weight) if self.weight_index() else (weight, pos)
 
-    def calc_sum(self, rolls, arr_size):
+    def calc_sum(self, rolls, arr_size)->int:
         weight = arr_size[self.weight_index()]
         total = 0
         for i in range(arr_size[0]):
@@ -43,14 +55,14 @@ class Direction(Enum):
                     total += weight + ((i, j)[self.weight_index()] * -self.range_orientation())
         return total
 
-    def roll_loop(self, rolls: set[(int, int)], blocks: set[(int, int)], arr_size: (int, int)):
+    def roll_loop(self, rolls: set[tuple[int, int]], blocks: set[tuple[int, int]], arr_size: tuple[int, int]) -> set[tuple[int, int]]:
         new_rolls = set()
         length = arr_size[self.weight_index()]
 
         # each pos_index represents a line rolling in the same direction
         for pos in range(arr_size[self.pos_index()]):
             # initialise the range and limit
-            limit = self.limit(length)
+            limit: int = self.limit(length)
             for weight in range(self.start(length), self.stop(length), self.range_orientation()):
                 if self.rebuild(pos, weight) in rolls:
                     # add blocks in order they were encountered, the limit will increase by the number added
@@ -61,7 +73,7 @@ class Direction(Enum):
                     limit = weight + self.range_orientation() 
         return new_rolls
 
-def show(rolls, blocks, arr_size):
+def show(rolls: set[tuple[int, int]], blocks: set[tuple[int, int]], arr_size: tuple[int, int]) -> None:
     for i in range(arr_size[0]):
         for j in range(arr_size[1]):
             if (i, j) in rolls:
@@ -72,7 +84,7 @@ def show(rolls, blocks, arr_size):
                 print(".", end="")
         print()
 
-def solve(filename):
+def solve(filename: str) -> None:
     blocks, rolls = set(), set()
     for i, line in enumerate(open(filename)):
         for j, char in enumerate(line.strip()):
@@ -80,9 +92,9 @@ def solve(filename):
                 blocks.add((i, j))
             elif char == "O":
                 rolls.add((i, j))
-    arr_size = (i+1, j+1)
+    arr_size: tuple[int, int] = (i+1, j+1)
     d = Direction.North
-    n = d.roll_loop(rolls, blocks, arr_size)
+    n: set[tuple[int, int]] = d.roll_loop(rolls, blocks, arr_size)
     print(d.calc_sum(n, arr_size))
 
 if __name__ == "__main__":

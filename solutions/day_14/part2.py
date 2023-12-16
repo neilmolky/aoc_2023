@@ -1,6 +1,6 @@
 from solutions.day_14.part1 import Direction
 
-def washing_machine(rolls, blocks, arr_size):
+def washing_machine(rolls, blocks, arr_size)->set[tuple[int, int]]:
     for d in Direction:
         rolls = d.roll_loop(rolls, blocks, arr_size)
     return rolls
@@ -13,7 +13,7 @@ def solve(filename):
                 blocks.add((i, j))
             elif char == "O":
                 rolls.add((i, j))
-    arr_size = (i+1, j+1)
+    arr_size: tuple[int, int] = (i+1, j+1)
 
     stored_loops = []
     start = 1000000000
@@ -22,7 +22,7 @@ def solve(filename):
         # add state to store
         stored_loops.append(rolls)
         # create new state
-        rolls = washing_machine(rolls, blocks, arr_size)
+        rolls: set[tuple[int, int]] = washing_machine(rolls, blocks, arr_size)
         # check if new state matches previous states and store the index if so
         for i, past in enumerate(stored_loops):
             if past == rolls:

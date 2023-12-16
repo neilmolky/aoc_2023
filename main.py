@@ -16,11 +16,11 @@ parser.add_argument(
 )
 parser.add_argument(
     "--filename", "-f", nargs=1, type=str, choices=["data.txt", "test1.txt", "test2.txt", "test3.txt"], 
-    default="data.txt", required=False
+    default=["data.txt"], required=False
 )
 if __name__ == "__main__":
     args = sys.argv[1:]
     cmd = parser.parse_args(args)
     module = importlib.import_module(f"solutions.day_{cmd.day[0]}.part{cmd.part[0]}")
-    path = f"solutions/day_{cmd.day[0]}/{cmd.filename}"
+    path = f"solutions/day_{cmd.day[0]}/{cmd.filename[0]}"
     module.solve(path)
