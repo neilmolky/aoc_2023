@@ -14,21 +14,22 @@ digit_dict = {
 
 # assuming each line has 1 number, start will be lazily set for the first number, end will be greedily set for every number
 def getDigit(s):
-    start, end = None, None
+    start, end = "", ""
     for i in range(len(s)):
          for word, number in digit_dict.items():
             if s[i:].startswith(word) or s[i] == number:
-                if start is None:
+                if len(start) == 0:
                     start = number
                 end = number
     return int(start + end)
 
 def solve(filename):
     total = 0
-    for line in open(filename):
-        total += getDigit(line.strip())
+    with open(filename) as file:
+        for line in file:
+            total += getDigit(line.strip())
     print(total)
-    assert total == 55358
+    return total
 
 if __name__ == "__main__":
     solve("test1.txt")

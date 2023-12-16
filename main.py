@@ -1,6 +1,6 @@
 import argparse
 import sys
-import importlib
+from importlib import import_module
 
 parser = argparse.ArgumentParser(
     prog="aoc_2023",
@@ -21,6 +21,6 @@ parser.add_argument(
 if __name__ == "__main__":
     args = sys.argv[1:]
     cmd = parser.parse_args(args)
-    module = importlib.import_module(f"solutions.day_{cmd.day[0]}.part{cmd.part[0]}")
+    module = import_module(f"solutions.day_{cmd.day[0]}.part{cmd.part[0]}")
     path = f"solutions/day_{cmd.day[0]}/{cmd.filename[0]}"
     module.solve(path)
