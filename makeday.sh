@@ -3,6 +3,8 @@
 day=$1
 
 mkdir solutions/day_$day
+mkdir data/day_$day
+
 touch data/day_$day/data.txt
 touch data/day_$day/test1.txt
 touch data/day_$day/test2.txt
