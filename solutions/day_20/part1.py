@@ -1,106 +1,81 @@
 import abc
+from curses.ascii import SI
 from dataclasses import dataclass
 from enum import Enum
 from collections import defaultdict, deque
+
 
 class Signal(Enum):
     Zero = 0
     Low = 1
     High = 2
 
-@dataclass
-class Message:
-    signal: Signal
-    source: str
-    destination: str
+    def flip(self):
+        if self.value == 0:
+            return Signal(0)
+        return Signal((self.value % 2) + 1)
 
 class Module(abc.ABC):
-    def __init__(self, name: str, destinations: list[str]):
-        ...
-    def accept(self, message: Message) -> list[Message]:
-        ...
-    @property
-    def active(self) -> bool:
+    def __init__(self, name: str = "", destinations: list[str] = []):
+        self.name = name
+        self.destinations = destinations
+
+    def accept(self, recieved: Signal, states: defaultdict[str, Signal]) -> tuple[dict[str, Signal], dict[str, Signal]]:
         ...
 
 class Void(Module):
-    def __init__(self, name: str = "", destinations: list[str] = []):
-        ...
-    def accept(self, message: Message) -> list[Message]:
-        return []
-    @property
-    def active(self) -> bool:
-        return False
+    def accept(self, recieved: Signal, states: defaultdict[str, Signal]) -> tuple[dict[str, Signal], dict[str, Signal]]:
+        return ({}, {})
 
 class FlipFlop(Module):
-    def __init__(self, name: str, destinations: list[str]):
-        self.state = False
-        self.destinations = destinations
-        self.name = name
+    def accept(self, recieved: Signal, states: defaultdict[str, Signal]) -> tuple[dict[str, Signal], dict[str, Signal]]:
+        if recieved == Signal.Low:
+            state = states[self.name].flip()
+            return ({d: state.flip() for d in self.destinations}, {self.name: state})
+        return ({}, {})
 
-    def accept(self, message: Message) -> list[Message]:
-        if message.signal == Signal.Low:
-            self.state = not self.state
-            if self.state:
-                return [Message(Signal.High, self.name, d) for d in self.destinations]
-            else:
-                return [Message(Signal.Low, self.name, d) for d in self.destinations]
-        return []
-    
-    @property
-    def active(self) -> bool:
-        return self.state
-    
-    def __repr__(self):
-        return f"FlipFlop({self.name}, {dict([(d, Signal.High if self.state else Signal.Low) for d in self.destinations])}"
-
-
-    
 class Conjunction(Module):
-    def __init__(self, name: str, destinations: list[str]):
-        self.states = {d: Signal.Low for d in destinations}
-        self.destinations = destinations
-        self.name = name
-
-    def accept(self, message: Message) -> list[Message]:
-        self.states[message.source] = message.signal
-        if all([s == Signal.High for s in self.states.values()]):
-            return [Message(Signal.Low, self.name, d) for d in self.destinations]
+    def accept(self, recieved: Signal, states: defaultdict[str, Signal]) -> tuple[dict[str, Signal], dict[str, Signal]]:
+        states: list[Signal] = [states[f"{d} {self.name}"] for d in self.destinations]
+        if all([s == Signal.High for s in states]):
+            return {d: Signal.Low for d in self.destinations}
         return [Message(Signal.High, self.name, d) for d in self.destinations]
     
-    @property
-    def active(self) -> bool:
-        return any([s == Signal.High for s in self.states.values()])
-    
-    def __repr__(self):
-        return f"Conjunction({self.name}, {self.states})"
+    def accept(self, recieved: Signal, state: Signal) -> tuple[Signal, dict[str, Signal]]:
+        return ()
+
     
 class Broadcast(Module):
-    def __init__(self, name: str, destinations: list[str]):
-        self.destinations: list[str] = destinations
-        self.name: str = name
-
-    def accept(self, message: Message) -> list[Message]:
+    def accept(self, recieved: Signal, state: Signal = Signal.Zero) -> tuple[Signal, dict[str, Signal]]:
         return [Message(message.signal, self.name, d) for d in self.destinations]
     
-    @property
-    def active(self) -> bool:
-        return False
-    
-    def __repr__(self):
-        return f"Broadcast({self.name})"
-    
 
-def state_non_zero(modules: dict[str, Module], itterations: int):
-    if itterations == 0:
-        return True
-    for m in modules.values():
-        if m.active:
-            return True
-    return False
+MODULES: defaultdict[str, Module] = defaultdict(Void)
+STATES: dict[int, defaultdict[str, Signal]] = {}
+MESSAGES: dict[int, dict[str, Signal]] = {}
+
+def pressButton(time: int):
+    if time in MESSAGES:
+        return MESSAGES[time]
+    MESSAGES[time] = {"broadcaster": Signal.Low}
+    t = time
+    while True:
+        STATES[t] = defaultdict(lambda: Signal.Low)
+        for module_name, signal_recieved in MESSAGES[t].items():
+            module = MODULES[module_name]
+            new_messages, new_states = module.accept(signal_recieved, STATES[t])
+
+            s = STATES[t][module_name]
+
+
+
+
+
 
 def solve(filename: str):
-    modules: defaultdict[str, Module] = defaultdict(Void)
+    
+
+
     with open(filename) as file:
         for line in file:
             name, destinations = line.strip().split(" -> ")
@@ -110,12 +85,12 @@ def solve(filename: str):
                 modules[name[1:]] = FlipFlop(name[1:], destinations.split(", "))
             elif name == "broadcaster":
                 modules[name] = Broadcast(name, destinations.split(", "))
-    
-    button_push = Message(Signal.Low, "button", "broadcaster")
-    times: list[int] = []
-    states: deque[list[Message]] = deque([])
 
+    t = 0
     while True:
+        for module_name, signal_recieved in states[t].items():
+            new_state, messages = modules[module_name].accept(signal)
+
         signals: list[Message] = modules["broadcaster"].accept(button_push)
         times.append(0)
         while len(signals) > 0:
