@@ -1,5 +1,4 @@
 use std::fs;
-use std::env::current_exe;
 use crate::day01;
 
 pub struct SolutionRunner {
