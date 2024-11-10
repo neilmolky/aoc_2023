@@ -1,2 +1,7 @@
 pub mod module_runner;
-pub mod day01;
+pub mod days;
+pub mod error;
+
+
+
+

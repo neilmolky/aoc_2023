@@ -13,22 +13,25 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     match args.len() {
         3 => {
-            let day: i32 = match args[1].parse() {
+            let day: u8 = match args[1].parse() {
                 Ok(x) if 1 <= x && x <= 25 => x,
                 _ => {
                     help();
                     return
                 }
             };
-            let part: i32 = match args[2].parse() {
+            let part: u8 = match args[2].parse() {
                 Ok(x) if x == 1 || x == 2 => x,
                 _ => {
                     help();
                     return
                 }
             };
-            let runner = SolutionRunner::build(day, part);
-            runner.solve();
+            let runner = SolutionRunner::new(day, part);
+            match runner.solve() {
+                Ok(x) => println!("{x}"),
+                Err(e) => eprint!("{e}")
+            }
         }
         _ => help()
     }
