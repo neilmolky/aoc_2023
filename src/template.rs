@@ -19,7 +19,7 @@ mod tests {
         let input = "".to_string();
         let result = part1(input);
         assert!(result.is_ok());
-        assert_eq!(result.unwrap(), "")
+        assert_eq!(result.unwrap(), "NOT_IMPLEMENTED")
 
     }
     #[ignore]
@@ -28,7 +28,7 @@ mod tests {
         let input = "".to_string();
         let result = part1(input);
         assert!(result.is_ok());
-        assert_eq!(result.unwrap(), "")
+        assert_eq!(result.unwrap(), "NOT_IMPLEMENTED")
 
     }
 }
