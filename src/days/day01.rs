@@ -1,10 +1,7 @@
-use regex::Regex;
-
 enum FirstLast<T> {
     Empty,
     Full(T, T)
 }
-
 
 
 impl FirstLast<char> {

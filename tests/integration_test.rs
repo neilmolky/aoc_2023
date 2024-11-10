@@ -1,27 +1,11 @@
 use aoc_2023::module_runner::SolutionRunner;
+use test_case::test_case;
 
-struct Solution {
-    day: u8,
-    part: u8,
-    answer: String
-}
-
-impl Solution {
-    fn new(day:u8, part:u8, answer_ptr: &str) -> Solution {
-        let answer = answer_ptr.to_string();
-        Solution {day, part, answer}
-    }
-}
-
-#[test]
-fn completed_solutions() {
-    let solved = vec![
-        Solution::new(1, 1, "56042"),
-        Solution::new(1, 2, "55358")
-    ];
-    for s in solved {
-        let actual = SolutionRunner::new(s.day, s.part).solve();
-        assert!(actual.is_ok());
-        assert_eq!(actual.unwrap(), s.answer);
-    }
+#[test_case(1, 2, "55358")]
+#[test_case(1, 1, "56042")]
+fn completed_solutions(day: u8, part: u8, expected: &str) {
+    let actual = SolutionRunner::new(day, part)
+        .solve();
+    assert!(actual.is_ok());
+    assert_eq!(actual.unwrap(), expected);
 }
