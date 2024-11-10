@@ -1,3 +1,4 @@
+use crate::error;
 enum FirstLast<T> {
     Empty,
     Full(T, T)
@@ -47,8 +48,8 @@ fn span(acc: FirstLast<char>, next: char) -> FirstLast<char> {
     }
 }
 
-pub fn part1(input: String) -> String {
-    let total: String = input
+pub fn part1(_input: String) -> Result<String, error::Error> {
+    let total: String = _input
         .lines()
         .map(|line| {
             let container: FirstLast<char> = FirstLast::Empty;
@@ -64,7 +65,7 @@ pub fn part1(input: String) -> String {
         .reduce(|x, y| x + y)
         .unwrap()
         .to_string();
-    total
+    Ok(total)
 }
     
 
@@ -103,13 +104,14 @@ fn get_digit(line: &str, acc: FirstLast<char>) -> u32 {
     }
 }
 
-pub fn part2(input: String) -> String {
-    input
+pub fn part2(_input: String) -> Result<String, error::Error> {
+    let result = _input
         .lines()
         .map(|line| get_digit(line, FirstLast::Empty))
         .reduce(|x, y| x + y)
         .unwrap()
-        .to_string()
+        .to_string();
+    Ok(result)
 }
 
 
@@ -123,7 +125,9 @@ mod tests {
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet".to_string();
-        assert_eq!(part1(input), "142")
+        let result = part1(input);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "142")
 
     }
     #[test]
@@ -135,8 +139,9 @@ xtwone3four
 4nineeightseven2
 zoneight234
 7pqrstsixteen".to_string();
-        assert_eq!(part2(input), "281")
-
+        let result = part2(input);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "281")
     }
     // #[test]
     // fn test_get_digit() {
